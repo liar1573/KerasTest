@@ -1,55 +1,52 @@
-from future import pr 工n t funct 工on
+from __future__ import print_function
 import numpy as np
-from keras . datasets import mnist
+from keras.datasets import mnist
 from keras.models import Sequential
-from keras.layers.core 工mport Dense , Act 工vation
-from keras . optimizers import SGD
-from keras . utils import np_utils
-np . random . seed(1671) ＃重复性设置
-＃网络和训练
+from keras.layers.core import Dense, Activation
+from keras.optimizers import SGD
+from keras.utils import np_utils
+np.random.seed(1671)
 
-NB EPOCH = 200
-BATCH SIZE = 128
+NB_EPOCH = 200
+BATCH_SIZE = 128
 VERBOSE = 1
-NB CLASSES = 10 ＃输出个数等于数字个数
-OPTIMIZER = SGD () #SGD 优化器，本章稍后介绍
-N HIDDEN = 128
-VALIDATION SPLIT=0 . 2 ＃训练集中用作验证集的数据比例
-＃数据：混合并划分训练集和测试集数据
+NB_CLASSES = 10
+OPTIMIZER = SGD () #SGD
+N_HIDDEN = 128
+VALIDATION_SPLIT=0.2
 #
-(X_train , y_train) , (X_test , y_test) = mn 工st.load_data()
-#X train 是60 000 行28 x 28 的数据，变形为60000 × 784
-RESHAPE D = 784
-#
-X_train = X_train . reshape(60000 , RESHAPED)
-X_test = X_test reshape(lOOOO , RESHAPED)
-X_train = X_train astype ( ’ float32 ’)
-X_test = X_test astype ( ’ float32 ’ )
-＃归一化
-#
-X train /= 255
-X test / = 255
-print (X_tra in . shape[O ］ ，『train samples ’ )
-pr 工nt(X_tes t .shape[O ］ ，’ test samples ’ )
-＃将类向量转换为二值类别矩阵
-Y_train = np_utils . to_categorical(y train , NB CLASSES )
-Y_test = np_utils . to categorical(y test, NB_CLASSES)
+(X_train , y_train) , (X_test , y_test) = mnist.load_data()
 
-#10 个输出
-＃最后是softmax 激活函数
+RESHAPED = 784
+#
+X_train = X_train.reshape(60000 , RESHAPED)
+X_test = X_test.reshape(10000 , RESHAPED)
+X_train = X_train.astype ( 'float32')
+X_test = X_test.astype ('float32')
+
+#
+X_train /= 255
+X_test /= 255
+print (X_train.shape[0], 'train samples ' )
+print(X_test.shape[0], 'test samples ' )
+
+Y_train = np_utils.to_categorical(y_train , NB_CLASSES )
+Y_test = np_utils.to_categorical(y_test, NB_CLASSES)
+
+
 model= Sequential()
-model . add(Dense(NB_CLASSES , input_shape=(RESHAPED , )))
-model . add(Act 工vation ( ” softmax ’))
+model.add(Dense(NB_CLASSES , input_shape=(RESHAPED , )))
+model.add(Activation ('softmax '))
 model. summary ()
 
-model . comp工le (l oss ＝ ’ categor工cal_crossentropy ’， optimizer=OPTIMIZER , metrics= [ ’ accuracy ’])
+model.compile (loss='categorical_crossentropy', optimizer=OPTIMIZER , metrics= [ 'accuracy'])
 
-h 工story= model . fit(X train, Y train ,
-batch_size=BATCH_SIZE, epochs=NB EPOCH,
-verbose=VERBOSE, val 工dation_split=VA LID ATION SPLIT )
+history= model.fit(X_train, Y_train ,
+batch_size=BATCH_SIZE, epochs=NB_EPOCH,
+verbose=VERBOSE, validation_split=VALIDATION_SPLIT )
 
 
-score = model . evaluate(X test, Y test , verbose=VERBOSE)
-print (” Test score : ”, score[OJ )
-print ( ’ Test accuracy :’ , score[l) )
+score = model.evaluate(X_test, Y_test , verbose=VERBOSE)
+print ('Test score :' , score[0] )
+print ( 'Test accuracy :' , score[1])
 
