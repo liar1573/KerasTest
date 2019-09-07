@@ -1,0 +1,89 @@
+from future import pr 工n t funct 工on
+import numpy as np
+from keras . datasets import mnist
+from keras.models import Sequential
+from keras.layers.core 工mport Dense , Act 工vation
+from keras . optimizers import SGD
+from keras . utils import np_utils
+np . random . seed(1671) ＃重复性设置
+
+
+＃网络和训练
+NB EPOCH = 20
+BATCH SIZE = 128
+VERBOSE = 1
+NB CLASSES = 10 ＃输出个数等于数字个数
+OPTIMIZER = SGD () #SGD 优化器，本章稍后介绍
+#这里应该只是定义了一个字符串来着
+N HIDDEN = 128
+VALIDATION SPLIT=0 . 2 ＃训练集中用作验证集的数据比例
+
+
+＃数据：混合并划分训练集和测试集数据
+#
+(X_train , y_train) , (X_test , y_test) = mn 工st.load_data()
+#X train 是60 000 行28 x 28 的数据，变形为60000 × 784
+#6W张28*28像素的图片，即60K*28*28个像素，拉直展开为60K*784*1的像素规模
+RESHAPE D = 784
+#
+X_train = X_train . reshape(60000 , RESHAPED)
+X_test = X_test reshape(lOOOO , RESHAPED)
+X_train = X_train astype ( ’ float32 ’)
+X_test = X_test astype ( ’ float32 ’ )
+＃归一化
+#
+X train /= 255
+X test / = 255
+#正规化normalization，据说数值在[0,1]之间神经网络训练更快
+
+print (X_tra in . shape[O ］ ，『train samples ’ )
+pr 工nt(X_tes t .shape[O ］ ，’ test samples ’ )
+#这里的shape,shape[0]应该是60k，shape[1]应该是784
+＃将类向量转换为二值类别矩阵
+#二值类别矩阵是什么意思？？
+Y_train = np_utils . to_categorical(y train , NB CLASSES )
+Y_test = np_utils . to categorical(y test, NB_CLASSES)
+
+#10 个输出
+＃最后是softmax 激活函数
+#model= Sequential()
+#model . add(Dense(NB_CLASSES , input_shape=(RESHAPED , )))
+#model . add(Act 工vation ( ” softmax ’))
+#model. summary ()
+
+#这里应该是加了一个线性全连接层，输入维度对应图片维度784，输出维度应该是对应数字分类数量10
+#激活函数为softmax，应该是最简单的一种神经网络了
+#输出维度由NB CLASSES = 10 变量定义
+
+#这里并没有用到之前定义的变量N HIDDEN = 128，即只有单层的神经网络并没有用到隐层
+
+################################################################
+#改良版只是修改了网络设置，其他地方基本都没变
+l!M HIDDEN 个隐藏层
+HO 个输出
+＃最后是softrnax 激活函数
+model = Sequenti al ()
+rnodel . add(Dense(N_HIDDEN , input_shape=(RESHAPED, )))
+rnodel . add ( Acti 飞ration ( ’ relu ’))
+model. add (Dense (N HIDDEN))
+rnodel . add ( Activation （ ’ relu 『））
+rnodel . add (Dense(NB CLASSES))
+rnodel . add(Activation (’ softrnax ’ ))
+model . summary()
+
+
+################################################################
+
+model . comp工le (l oss ＝ ’ categor工cal_crossentropy ’， optimizer=OPTIMIZER , metrics= [ ’ accuracy ’])
+
+h 工story= model . fit(X train, Y train ,
+batch_size=BATCH_SIZE, epochs=NB EPOCH,
+verbose=VERBOSE, val 工dation_split=VA LID ATION SPLIT )
+#这个VERBOSE参数是什么意思？？
+#verbose: 0, 1 或 2。日志显示模式。 0 = 安静模式, 1 = 进度条, 2 = 每轮一行。
+
+score = model . evaluate(X test, Y test , verbose=VERBOSE)
+print (” Test score : ”, score[OJ )
+print ( ’ Test accuracy :’ , score[l) )
+#这里的score 0.27738是如何打分的？？
+
